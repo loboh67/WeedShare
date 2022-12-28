@@ -16,10 +16,18 @@ module.exports = {
                 .setName("quantity")
                 .setDescription("Quantity of the weed")
                 .setRequired(true)
+        )
+        .addStringOption((option) =>
+            option
+                .setName("date")
+                .setDescription("Date of the weed")
+                .setRequired(true)
         ),
+
     async execute(interaction) {
         const name = interaction.options.getString("name");
         const quantity = interaction.options.getInteger("quantity");
+        const dateBought = interaction.options.getString("date");
 
         // Search for the weed object in the database
         const weed = await Weed.findOne({ where: { name: name } });
@@ -32,9 +40,14 @@ module.exports = {
         // Update the weed object in the database
         try {
             await weed.increment('quantity', { by: quantity });
+            let datesBought = JSON.parse(weed.datesBought);
+            datesBought.push(dateBought);
+            weed.update({
+                datesBought: JSON.stringify(datesBought)
+            });
 
             return interaction.reply(
-                `You restocked ${quantity}g of ${name}!`
+                `You restocked ${quantity}g of ${name} in ${dateBought}!`
             );
         } catch (error) {
             return interaction.reply("An error occurred while restocking the weed.");

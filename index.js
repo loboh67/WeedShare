@@ -3,7 +3,7 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 const { Op } = require('sequelize');
-const { Weed } = require('./dbObjects.js');
+const { Weed, Smoke } = require('./dbObjects.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -19,6 +19,7 @@ for (const file of commandFiles) {
 
 client.once(Events.ClientReady, () => {
     Weed.sync();
+    Smoke.sync();
 	console.log('Ready!');
 });
 

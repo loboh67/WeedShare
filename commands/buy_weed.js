@@ -34,25 +34,33 @@ module.exports = {
         .setName("description")
         .setDescription("Description of the weed")
         .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("date")
+        .setDescription("Date of the weed")
+        .setRequired(true)
     ),
+
   async execute(interaction) {
     const name = interaction.options.getString("name");
     const price = interaction.options.getInteger("price");
     const quantity = interaction.options.getInteger("quantity");
     const description = interaction.options.getString("description");
+    const date = interaction.options.getString("date");
 
     // Add the weed object to the database
     try {
-        console.log("Creating weed")
         await Weed.create({
             name: name,
             price: price,
             quantity: quantity,
             description: description,
+            datesBought: JSON.stringify([date]),
         });
 
       return interaction.reply(
-        `You bought ${quantity}g of ${name} for ${price}€ each!`
+        `You bought ${quantity}g of ${name} for ${price}€ each in ${date}!`
       );
     } catch (error) {
       if (error.name === "SequelizeUniqueConstraintError") {
